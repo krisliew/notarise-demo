@@ -1,13 +1,32 @@
 <template>
   <div class="insideNav" :class="{ 'insideNav--hidden': !showNavbar }">
-    <b-navbar toggleable="lg" type="dark" variant="primary-dark" class="navbar">
+    <b-navbar
+      sticky
+      toggleable="lg"
+      type="dark"
+      variant="primary-dark"
+      class="navbar"
+    >
       <b-navbar-brand id="siteLogo" to="/">NotoCert Demo</b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item to="/notarise" class="dropDownMenu">Notarise</b-nav-item>
+          <b-nav-item
+            id="verifyPage"
+            to="/"
+            class="dropDownMenu"
+            :active="verifyActive"
+            >Verify</b-nav-item
+          >
+          <b-nav-item
+            id="notarisePage"
+            to="/notarise"
+            class="dropDownMenu"
+            :active="notariseActive"
+            >Notarise</b-nav-item
+          >
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -20,15 +39,39 @@ export default {
     return {
       showNavbar: true,
       lastScrollPosition: 0,
+      verifyActive: false,
+      notariseActive: false,
     }
   },
+  watch: {
+    $route(value) {
+      this.routeCheck(value)
+    },
+  },
   mounted() {
+    this.routeCheck(this.$route)
     window.addEventListener('scroll', this.onScroll)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.onScroll)
   },
   methods: {
+    routeCheck(value) {
+      switch (value.path) {
+        case '/notarise':
+          this.verifyActive = false
+          this.notariseActive = true
+          document.getElementById('notarisePage').style.color =
+            'rgba(255, 255, 255, 0)'
+          break
+        case '/':
+          this.verifyActive = true
+          this.notariseActive = false
+          document.getElementById('verifyPage').style.color =
+            'rgba(255, 255, 255, 0)'
+          break
+      }
+    },
     onScroll() {
       const currentScrollPosition =
         window.pageYOffset || document.documentElement.scrollTop
