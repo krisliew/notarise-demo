@@ -12,7 +12,7 @@ Online Demo Link: http://soonjing.herokuapp.com/
 
 ## Guide
 
- 1. How to verify a file?
+ 1. How to verify a certificate?
 	  - Go to http://soonjing.herokuapp.com/ 
 	  - Click the **Verify Certificate** button
 	  - Upload your certificateFile.pdf and voila! 
