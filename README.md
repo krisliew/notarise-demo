@@ -1,6 +1,12 @@
-# notarise-demo
-> DEMO Link: (Do ensure that you are running on http because https would not work)
+# Certificate Notarisation Demo
+> Do ensure that you are running on http because https would not work,
+Online Demo Link: 
 http://soonjing.herokuapp.com/
+
+## Blockchain
+  - Symbol Blockchain Explorer: http://explorer-951.symboldev.network/
+  - Endpoint: http://api-01.ap-southeast-1.testnet-0951-v1.symboldev.network:3000/
+    
 
 ## Build Setup
 
@@ -14,9 +20,4 @@ $ npm run dev
 # build for production and launch server
 $ npm run build
 $ npm run start
-
-# generate static project
-$ npm run generate
 ```
-
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
