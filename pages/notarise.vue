@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="container">
-      <h1>Notarise a certificate for a user</h1>
+      <h1>Notarise a Certificate</h1>
       <b-form style="padding-top: 20px;" @submit.prevent="notariseFile">
         <b-form-group
           label="Certificate Title:"
@@ -117,7 +117,6 @@ export default {
         reader.onload = function (event) {
           const data = new Uint8Array(event.target.result)
           self.fileHash = self.CryptoJS.SHA256(data)
-          console.log('Encrypted: ' + self.fileHash)
           self.fileData = data
           self.notariseFile(self.fileHash)
         }
@@ -166,7 +165,6 @@ export default {
         this.networkType,
         UInt64.fromUint(2000000)
       )
-      console.log(transferTransaction)
       const signedTransaction = sender.sign(
         transferTransaction,
         this.networkGenerationHash
@@ -243,6 +241,15 @@ export default {
     async uploadCertificate(txHash) {
       // Step 4: Upload certificate to DB + link txHash with userid + filepath
       this.loader.hide()
+      this.$bvToast.toast(
+        `A download of the notarised certificate should begin shortly...`,
+        {
+          title: 'Completion of Notarisation',
+          autoHideDelay: 3000,
+          appendToast: false,
+          variant: 'success',
+        }
+      )
       const pdfDoc = await PDFDocument.load(this.fileData)
       pdfDoc.setTitle(this.title)
       pdfDoc.setAuthor('NotoCert Demo')
@@ -251,21 +258,12 @@ export default {
         'Soon Jing (https://github.com/soonjing/notarise-demo)'
       )
       pdfDoc.setKeywords([this.lastTxHash])
-      // Print all available metadata fields
-      console.log('Title:', pdfDoc.getTitle())
-      console.log('Author:', pdfDoc.getAuthor())
-      console.log('Subject:', pdfDoc.getSubject())
-      console.log('Creator:', pdfDoc.getCreator())
-      console.log('Keywords:', pdfDoc.getKeywords())
-      console.log('Producer:', pdfDoc.getProducer())
-      console.log('Creation Date:', pdfDoc.getCreationDate())
-      console.log('Modification Date:', pdfDoc.getModificationDate())
 
       const pdfBytes = await pdfDoc.save()
       const blob = new Blob([pdfBytes], { type: 'application/pdf' })
       const link = document.createElement('a')
       link.href = URL.createObjectURL(blob)
-      link.download = 'FileName'
+      link.download = pdfDoc.getTitle() + '(Notarised Certificate)'
       link.click()
       URL.revokeObjectURL(link.href)
     },

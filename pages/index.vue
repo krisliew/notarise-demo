@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="container text-center">
+    <div id="mainBodyText" class="container text-center">
       <h1>Blockchain Certificate Verification</h1>
       <h3 class="lead">
         <em
@@ -41,7 +41,7 @@
         "
         @save="btnOK"
       >
-        <div v-if="showYes">
+        <div v-if="showYes" class="stackModal">
           <p>This certificate is a notarised true copy!</p>
 
           <div
@@ -81,7 +81,9 @@
             >
           </p>
         </div>
-        <p v-else-if="showNo">This certificate is not a notarised true copy!</p>
+        <p v-else-if="showNo" class="stackModal">
+          This certificate is not a notarised true copy!
+        </p>
       </stack-modal>
     </client-only>
   </section>
@@ -180,7 +182,6 @@ export default {
 
             const pdfDoc = await PDFDocument.load(data)
             const txHash = pdfDoc.getKeywords()
-            console.log('txHash: ' + txHash)
             self.verifyFileOnBlockchain(txHash)
           }
           reader.readAsArrayBuffer(this.file)
@@ -226,14 +227,10 @@ export default {
               'TAUSJXSGAZSLAX2SYHRHWPAHOLTRYMFB5L3QVC5K'
             ) {
               this.loader.hide()
-              console.log('tx payload:' + transaction.message.payload)
-              console.log('FileHash: ' + this.fileHash)
               if (transaction.message.payload == this.fileHash) {
                 this.showYes = true
-                console.log('True copy')
               } else {
                 this.showNo = true
-                console.log('Fake copy')
               }
             } else {
               this.$bvToast.toast(
@@ -280,9 +277,13 @@ section {
   background-repeat: no-repeat;
   background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
     url('~assets/img/header.jpg');
-  text-align: center;
+}
+section #mainBodyText {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: white;
+}
+.stackModal {
+  color: black;
 }
 #scrollDownP a {
   font-size: 11px;
