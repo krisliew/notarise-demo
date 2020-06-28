@@ -152,7 +152,7 @@ export default {
       this.txPayLoad = null
     },
     chooseFiles() {
-      // file explorer to browse file
+      // file explorer to browse + select file
       document.getElementById('fileUpload').click()
     },
     handleFileUpload() {

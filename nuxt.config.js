@@ -69,5 +69,22 @@ export default {
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
    */
-  build: {},
+  build: {
+    extend(config, ctx) {
+      config.output.globalObject = 'this'
+      config.module.rules.push(
+        // For PDF to be viewed under webpack config
+        {
+          test: /\.pdf$/,
+          loader: 'url-loader',
+        }
+      )
+      config.node = {
+        // To allow Symbol-sdk
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty',
+      }
+    },
+  },
 }
