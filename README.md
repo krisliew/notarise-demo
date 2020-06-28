@@ -1,4 +1,6 @@
 # notarise-demo
+> Do ensure that you are running on http because https would not work:
+> DEMO Link: http://soonjing.herokuapp.com/
 
 ## Build Setup
 
