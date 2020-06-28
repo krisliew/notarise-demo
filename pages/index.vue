@@ -90,7 +90,10 @@
 <script>
 /* eslint-disable no-console */
 /* eslint-disable no-global-assign */
+/* eslint-disable eqeqeq */
 import { RepositoryFactoryHttp } from 'symbol-sdk'
+import { PDFDocument } from 'pdf-lib'
+
 export default {
   data() {
     return {
@@ -105,7 +108,6 @@ export default {
       // File
       file: null,
       fileHash: null,
-      txPayLoad: null,
       // stack modal UI
       showYes: false,
       showNo: false,
@@ -129,8 +131,6 @@ export default {
       if (this.file) {
         this.pdfURL = URL.createObjectURL(this.$refs.fileInput.files[0])
       }
-      console.log(this.$refs.fileInput.files[0])
-      console.log(this.pdfURL)
     },
     showYes() {
       if (this.showYes === false) {
@@ -149,7 +149,6 @@ export default {
       this.showNo = false
       this.file = null
       this.fileHash = null
-      this.txPayLoad = null
     },
     chooseFiles() {
       // file explorer to browse + select file
@@ -172,15 +171,19 @@ export default {
           zIndex: 100,
         })
 
-        if (
-          this.file.type === 'application/pdf' &&
-          this.file.name.includes(' - ')
-        ) {
-          let txHash = this.file.name.split(' - ')[
-            this.file.name.split(' - ').length - 1
-          ]
-          txHash = txHash.replace('.pdf', '')
-          this.verifyFileOnBlockchain(txHash)
+        if (this.file.type === 'application/pdf') {
+          self = this
+          const reader = new FileReader()
+          reader.onload = async function (event) {
+            const data = new Uint8Array(event.target.result)
+            self.fileHash = self.CryptoJS.SHA256(data)
+
+            const pdfDoc = await PDFDocument.load(data)
+            const txHash = pdfDoc.getKeywords()
+            console.log('txHash: ' + txHash)
+            self.verifyFileOnBlockchain(txHash)
+          }
+          reader.readAsArrayBuffer(this.file)
         } else if (this.file.type !== 'application/pdf') {
           this.loader.hide()
           this.file = null
@@ -216,17 +219,22 @@ export default {
         .pipe(operators1.map((x) => x))
         .subscribe(
           (transaction) => {
-            console.log(
-              'TX Recipient Address: ' + transaction.recipientAddress.address
-            )
             // Reject it if the TX reciever is not from the Notarise account
             // Notarise account also have tx restriction feature in
             if (
               transaction.recipientAddress.address ===
               'TAUSJXSGAZSLAX2SYHRHWPAHOLTRYMFB5L3QVC5K'
             ) {
-              this.txPayLoad = transaction.message.payload
-              this.hashFile()
+              this.loader.hide()
+              console.log('tx payload:' + transaction.message.payload)
+              console.log('FileHash: ' + this.fileHash)
+              if (transaction.message.payload == this.fileHash) {
+                this.showYes = true
+                console.log('True copy')
+              } else {
+                this.showNo = true
+                console.log('Fake copy')
+              }
             } else {
               this.$bvToast.toast(
                 `The uploaded certificate is not notarised by NotoCert.`,
@@ -255,24 +263,6 @@ export default {
             console.log(err)
           }
         )
-    },
-    hashFile() {
-      if (this.file) {
-        self = this
-        const reader = new FileReader()
-        // Load the event below after reader.readAsBinarString finish reading the file input
-        reader.onload = function (event) {
-          const data = event.target.result
-          self.fileHash = self.CryptoJS.SHA256(data)
-          self.loader.hide()
-          if (self.txPayLoad === self.fileHash) {
-            self.showYes = true
-          } else {
-            self.showNo = true
-          }
-        }
-        reader.readAsBinaryString(this.file)
-      }
     },
   },
   head() {
