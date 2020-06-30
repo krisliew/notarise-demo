@@ -276,7 +276,7 @@ export default {
 
 <style scoped>
 section {
-  padding-top: 120px;
+  padding-top: 50px;
 }
 .text-error {
   padding-top: 5px;
