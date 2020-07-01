@@ -205,7 +205,7 @@ export default {
             console.log(response)
             if (response.group === 'confirmed' && response.code === 'Success') {
               clearInterval(this.interval)
-              this.uploadCertificate(txHash)
+              this.promptDownload(txHash)
             } else if (
               response.group === 'unconfirmed' &&
               response.code === 'Success'
@@ -238,8 +238,8 @@ export default {
           }
         )
     },
-    async uploadCertificate(txHash) {
-      // Step 4: Upload certificate to DB + link txHash with userid + filepath
+    async promptDownload(txHash) {
+      // Step 4: Prompt download of the notarised file
       this.loader.hide()
       this.$bvToast.toast(
         `A download of the notarised certificate should begin shortly...`,
