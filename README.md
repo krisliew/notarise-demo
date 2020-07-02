@@ -7,7 +7,7 @@ Online Demo Link: http://soonjing.herokuapp.com/
 
 > Do ensure that you are running on http because https would not work.
 
-> PS: There is a issue related to the library used on the file hashing. Will update a fix on this soon. 
+> PS: There is a issue related to the library used on the pdf hashing. Will update a fix on this soon. 
 
 ## Blockchain
   - Symbol Blockchain Explorer: http://explorer-951.symboldev.network/
