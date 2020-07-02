@@ -7,6 +7,7 @@ Online Demo Link: http://soonjing.herokuapp.com/
 
 > Do ensure that you are running on http because https would not work.
 
+> PS: There is a issue related to the library used on the file hashing. Will update a fix on this soon. 
 
 ## Blockchain
   - Symbol Blockchain Explorer: http://explorer-951.symboldev.network/
@@ -28,7 +29,6 @@ Online Demo Link: http://soonjing.herokuapp.com/
 	- When your certificate gets confirmed on blockchain, you will be prompted to download the notarised certificate file. Additionally, you may also rename the file name
 	- Finally, you may try to verify the certificate you just notarised to see if it worked
   
-
 ## Build Setup
 
 ```bash
