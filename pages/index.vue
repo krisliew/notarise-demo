@@ -94,7 +94,7 @@
 /* eslint-disable no-global-assign */
 /* eslint-disable eqeqeq */
 import { RepositoryFactoryHttp } from 'symbol-sdk'
-import { PDFDocument } from 'pdf-lib'
+// import { PDFDocument } from 'pdf-lib'
 
 export default {
   data() {
@@ -156,6 +156,16 @@ export default {
       // file explorer to browse + select file
       document.getElementById('fileUpload').click()
     },
+    arrayBufferToWordArray(ab) {
+      const i8a = new Uint8Array(ab)
+      const a = []
+      for (let i = 0; i < i8a.length; i += 4) {
+        a.push(
+          (i8a[i] << 24) | (i8a[i + 1] << 16) | (i8a[i + 2] << 8) | i8a[i + 3]
+        )
+      }
+      return this.CryptoJS.lib.WordArray.create(a, i8a.length)
+    },
     handleFileUpload() {
       // Trigger v-on:change when file is uploaded
       this.file = this.$refs.fileInput.files[0]
@@ -172,16 +182,23 @@ export default {
           opacity: 0.7,
           zIndex: 100,
         })
-
-        if (this.file.type === 'application/pdf') {
+        if (
+          this.file.type === 'application/pdf' &&
+          this.file.name.includes(' - ')
+        ) {
           self = this
           const reader = new FileReader()
-          reader.onload = async function (event) {
+          reader.onload = function (event) {
             const data = new Uint8Array(event.target.result)
-            self.fileHash = self.CryptoJS.SHA256(data)
-
-            const pdfDoc = await PDFDocument.load(data)
-            const txHash = pdfDoc.getKeywords()
+            self.fileHash = self.CryptoJS.SHA256(
+              self.arrayBufferToWordArray(data)
+            )
+            // const pdfDoc = await PDFDocument.load(data)
+            // const txHash = pdfDoc.getKeywords()
+            let txHash = self.file.name.split(' - ')[
+              self.file.name.split(' - ').length - 1
+            ]
+            txHash = txHash.replace('.pdf', '')
             self.verifyFileOnBlockchain(txHash)
           }
           reader.readAsArrayBuffer(this.file)

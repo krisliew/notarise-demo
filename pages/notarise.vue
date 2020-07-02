@@ -76,7 +76,7 @@ import {
   RepositoryFactoryHttp,
   UInt64,
 } from 'symbol-sdk'
-import { PDFDocument } from 'pdf-lib'
+// import { PDFDocument } from 'pdf-lib'
 const operators1 = require('rxjs/operators')
 
 export default {
@@ -116,12 +116,25 @@ export default {
         // Load the event below after reader.readAsArrayBuffer() finish reading the file input
         reader.onload = function (event) {
           const data = new Uint8Array(event.target.result)
-          self.fileHash = self.CryptoJS.SHA256(data)
+          self.fileHash = self.CryptoJS.SHA256(
+            self.arrayBufferToWordArray(data)
+          )
+          console.log(self.fileHash + '')
           self.fileData = data
           self.notariseFile(self.fileHash)
         }
         reader.readAsArrayBuffer(this.file)
       }
+    },
+    arrayBufferToWordArray(ab) {
+      const i8a = new Uint8Array(ab)
+      const a = []
+      for (let i = 0; i < i8a.length; i += 4) {
+        a.push(
+          (i8a[i] << 24) | (i8a[i + 1] << 16) | (i8a[i + 2] << 8) | i8a[i + 3]
+        )
+      }
+      return this.CryptoJS.lib.WordArray.create(a, i8a.length)
     },
     titleCheck() {
       if (this.title) {
@@ -238,7 +251,7 @@ export default {
           }
         )
     },
-    async promptDownload(txHash) {
+    promptDownload(txHash) {
       // Step 4: Prompt download of the notarised file
       this.loader.hide()
       this.$bvToast.toast(
@@ -250,20 +263,22 @@ export default {
           variant: 'success',
         }
       )
-      const pdfDoc = await PDFDocument.load(this.fileData)
-      pdfDoc.setTitle(this.title)
-      pdfDoc.setAuthor('NotoCert Demo')
-      pdfDoc.setCreator('Soon Jing + Symbol Blockchain v951')
-      pdfDoc.setProducer(
-        'Soon Jing (https://github.com/soonjing/notarise-demo)'
-      )
-      pdfDoc.setKeywords([this.lastTxHash])
+      // const pdfDoc = await PDFDocument.load(this.fileData, {
+      //   updateMetadata: false,
+      // })
+      // pdfDoc.setTitle(this.title)
+      // pdfDoc.setAuthor('NotoCert Demo')
+      // pdfDoc.setCreator('Soon Jing + Symbol Blockchain v951')
+      // pdfDoc.setProducer(
+      //   'Soon Jing (https://github.com/soonjing/notarise-demo)'
+      // )
+      // pdfDoc.setKeywords([this.lastTxHash])
 
-      const pdfBytes = await pdfDoc.save()
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+      // const pdfBytes = await this.fileData.save()
+      // const blob = new Blob([pdfBytes], { type: 'application/pdf' })
       const link = document.createElement('a')
-      link.href = URL.createObjectURL(blob)
-      link.download = pdfDoc.getTitle() + '(Notarised Certificate)'
+      link.href = URL.createObjectURL(this.file)
+      link.download = this.title + ' - ' + this.lastTxHash + '.pdf'
       link.click()
       URL.revokeObjectURL(link.href)
     },
