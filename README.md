@@ -10,7 +10,7 @@ Online Demo Link: http://soonjing.herokuapp.com/
 
 ## Blockchain
   - Symbol Blockchain Explorer: http://explorer-951.symboldev.network/
-  - Endpoint: http://api-01.ap-southeast-1.testnet-0951-v1.symboldev.network:3000/chain/height
+  - Blockchain Endpoint: http://api-01.ap-southeast-1.testnet-0951-v1.symboldev.network:3000/chain/height
     
 
 ## Guide
