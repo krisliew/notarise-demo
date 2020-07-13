@@ -7,7 +7,7 @@ Online Demo Link: http://soonjing.herokuapp.com/
 
 > Do ensure that you are running on http because https would not work.
 
-> PS: Due to some issue with the library I am using, the blockchain transaction hash will be stored on the file name until I fix this issue.
+> PS: Blockchain transaction hash will be stored on the file name as for now
 
 ## Blockchain
   - Symbol Blockchain Explorer: http://explorer-951.symboldev.network/
