@@ -3,7 +3,7 @@
 This repository is created to demonstrate a simple implementation that allow a certificate to be tamper-proof and certified on the blockchain.
 
 
-Online Demo Link: http://soonjing.herokuapp.com/
+Online Demo Link: This repository is outdated as the blockchain endpoint is no longer working, will update in future ~~http://soonjing.herokuapp.com/~~
 
 > Do ensure that you are running on http because https would not work.
 
