@@ -20,7 +20,7 @@
     "nuxt": "^2.13.0",
     "pdf-lib": "^1.9.0",
     "rxjs": "^6.5.5",
-    "symbol-sdk": "^0.19.2",
+    "symbol-sdk": "^2.0.3",
     "vue-cryptojs": "^2.1.4",
     "vue-loading-overlay": "^3.3.2",
     "vue-pdf": "^4.1.0"
